@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appointment Confirmation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .logo {
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .logo img {
+            max-height: 100px; 
+            margin-right: 10px; 
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="https://outsourcetopk.com/public/assets/images/portfolio/logo/Hospital-1.jpg" alt="MedTech Logo">
+        </div>
+        <h1>TechMed Hospitals Pvt Ltd.</h1>
+    </header>
+    <div class="container">
+        <h2>Appointment Rejected</h2>
+        <p>Dear Patient,</p>
+        
+        <p>Your appointment has been rejected by Dr.{{ doctor }}. </p>
+        <p>Reason: {{reason}}</p>
+        
+        
+        
+        <h2>Our Services</h2>
+        <ul>
+            <li>Hospitals</li>
+            <li>Nursing</li>
+            <li>Medicines</li>
+        </ul>
+        
+        <h2>Contact Us</h2>
+        <p>If you have any questions, feel free to <a href="mailto:MedTech@gmail.com">email us</a>.</p>
+        <h3>TechMed Hospitals Pvt. Ltd.</h3>
+        <p>Muradnagar, Ghaziabad, Uttar Pradesh.</p>
+    </div>
+</body>
+</html>

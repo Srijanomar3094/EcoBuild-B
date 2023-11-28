@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ pdf_title }}</title>
+    <style>
+        
+        body, h1, h2, p {
+            margin: 0;
+            padding: 0;
+            
+        }
+
+      
+        body {
+            background-color: grey;
+            color: #333;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+      
+        h1 {
+            font-size: 24px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+       
+        h2 {
+            font-size: 20px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+      
+        p {
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+
+      
+        p + p {
+            margin-top: 5px;
+        }
+
+        /* Style strong elements (e.g., patient information labels) */
+        strong {
+            font-weight: bold;
+        }
+
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border: 1px solid #ddd;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
+        }
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .logo {
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .logo img {
+            max-height: 40px; /* Set the desired height */
+            margin-right: 10px; /* Add some spacing between the image and text */
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="https://img.freepik.com/free-vector/hospital-logo-design-vector-medical-cross_53876-136743.jpg" alt="MedTech Logo">
+        </div>
+        <h1>TechMed Hospitals Pvt Ltd.</h1>
+    </header>
+    <div class="container">
+        <h1>Prescription</h1>
+        <p><strong>Date:</strong>{{appointment_date}}
+        {% comment %} <p><strong>Doctor:</strong>{{doctor}}</p> {% endcomment %}
+        <p>{{doctor_qualification}}</p>
+
+        
+        
+        <h2><u>Patient Information</u></h2>
+        <p><strong>Name:</strong> {{ patient_name }}</p>
+        <p><strong>Age:</strong> {{ patient_age }}</p>
+        <p><strong>Gender:</strong> {{ patient_gender }}</p>
+
+        <h2><u>Prescription Details</u></h2>
+        <p><strong>Diagnosis:</strong> {{ patient_diagnosis }}</p>
+        <p><strong>Medication:</strong> {{ patient_medication }}</p>
+        <p><strong>Dosage:</strong> {{ patient_dosage }}</p>
+        <p><strong>Instructions:</strong> {{ patient_instructions }}</p>
+    </div>
+</body>
+</html>
+
+
+
