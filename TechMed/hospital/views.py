@@ -2,7 +2,8 @@ from django.contrib.auth import login, authenticate,logout
 from django.http import JsonResponse,HttpResponse
 import json
 from django.contrib.auth.models import User
-from .models import Patient_Appointments,Patient_Details,Patient_Payment_History,Patients_Prescriptions,Doctor_Details,Receptionist,DoctorDepartment,HomePage_Fields,User_Role
+from .models import (Patient_Appointments,Patient_Details,Patient_Payment_History,Patients_Prescriptions,Doctor_Details,
+                                   Receptionist,DoctorDepartment,HomePage_Fields,User_Role,Architect)
 from datetime import datetime
 from django.shortcuts import render
 from django.utils.dateparse import parse_datetime
@@ -14,14 +15,15 @@ import re
 
 
 
-
-#################################-----Tested--Patient_Registeration-------###############################################
+#################################-----Tested--Client_Registeration-------###############################################
     
 
-def PatientRegisteration(request):
+def WorkerRegistration(request):
+
     if request.method == 'POST':
         data = json.loads(request.body)
         username = data.get('username')
+        print(username)
         password = data.get('password')
         first_name = data.get('first_name')
         last_name = data.get('last_name')
@@ -29,10 +31,10 @@ def PatientRegisteration(request):
         age = data.get('age')
         address = data.get('address')
         weight = data.get('weight')
-        gender = data.get('gender')
+        #gender = data.get('gender')
         contact = data.get('contact')
 
-        if not (username and password and first_name and last_name and email and age and address and weight and gender and contact):
+        if not (username and password and first_name and last_name and email and age and address and weight and contact):
             return JsonResponse({'error': 'Invalid registration details.'}, status=400)
         
         if User.objects.filter(username=username).exists() or User.objects.filter(email=email).exists():
@@ -71,7 +73,7 @@ def PatientRegisteration(request):
 
             role = User_Role.objects.create(
             User_id=patientid,
-            Role="patient"
+            Role="worker"
             )
 
             details = Patient_Details.objects.create(
@@ -79,47 +81,89 @@ def PatientRegisteration(request):
                 Patient_Age=age,
                 Patient_Address=address,
                 Patient_Weight=weight ,
-                Patient_Gender=gender,
                 Patient_Contact=contact
 
             )
-        return JsonResponse({'message': 'Patient Registration successful !!'}, status=200)
+        return JsonResponse({'message': 'Worker Registration successful !!'}, status=200)
+    return JsonResponse({"error": "Invalid request method."}, status=405)
+   
+
+
+#################################-----Tested--Architect_Registeration-------###############################################
+    
+    
+    
+def ArchitectRegistration(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        username = data.get('username')
+        password = data.get('password')
+        first_name = data.get('first_name')
+        last_name = data.get('last_name')
+        email = data.get('email')
+        area = data.get('area')
+        contact = data.get('contact')
+        qualification = data.get('qualification')
+        experience = data.get('exp')
+        projects = data.get('projects')
+        
+
+        if not (username and password and first_name and last_name and email and contact):
+            return JsonResponse({'error': 'Invalid registration details.'}, status=400)
+        
+        if User.objects.filter(username=username).exists() or User.objects.filter(email=email).exists():
+            return JsonResponse({'error': 'Username or email already exists.'}, status=400)
+        
+        if not re.match(r'^[\w\.-]+@[\w\.-]+\.\w{2,4}$', email):
+            return JsonResponse({'error': 'Incorrect email format.'}, status=400)
+        
+        if not re.match(r'^\d{10}$', contact):
+            return JsonResponse({'message': 'Phone number must be 10 digits. Please enter again!!'}, status=400)
+
+        if not re.match(
+                r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!#%*?&]{6,20}$',password):
+            return JsonResponse(
+                {
+                    'message': 'Invalid password. Password must contain at least one uppercase letter, one lowercase letter, '
+                               'one special character, and be at least 8 characters long.'
+                },status=400)
+        
+        else:
+            user = User.objects.create_user(
+                username=username,
+                password=password,
+                first_name=first_name,
+                last_name=last_name,
+                email=email
+    
+            )
+            
+            userr = User.objects.filter(email=email).values('id').first()
+            userrid = userr['id']
+        
+
+            role = User_Role.objects.create(
+            User_id=userrid,
+            Role="architect"
+            )
+
+            details = Architect.objects.create(
+                architect_id=userrid,
+                Name = first_name+' '+last_name,
+                Area=area,
+                Qualification=qualification,
+                Experience=experience,
+                Projects=projects
+            )
+        return JsonResponse({'message': 'Architect Registration successful !!'}, status=200)
     return JsonResponse({"error": "Invalid request method."}, status=405)
 
 
-
-
-######################################--Tested-Doctor-Departments----#####################################################
-
-
-
-def Doctor_Department(request):
-    if request.method == 'GET':
-        departments = list(DoctorDepartment.objects.filter(status=1).values('Department', 'id'))
-
-        return JsonResponse(departments,safe=False)
-    else:
-        return JsonResponse({"message":"invalid request method"},status=405)
-    
-
-
-####################################--Tested-Doctor-Details-######################################################
-
-
-def Doctor_details(request):
-    if request.method == 'GET':
-         depart = request.GET.get('department') 
-         ddetails = list(Doctor_Details.objects.filter(Department=depart).values('Doctor__first_name','Doctor__last_name','Doctor','Department__Department'))
-         return JsonResponse(ddetails,safe=False)
-    else:
-        return JsonResponse({'message':'invalid method'},status=405)
-
-
-#####################################----Tested-Doctor_Registration------############################################
+#####################################----Tested-Worker_Registration------############################################
 
 
 
-def DoctorRegistration(request):
+def ClientRegistration(request):
     if request.method == 'POST':
         data = json.loads(request.body)
         username = data.get('username')
@@ -128,13 +172,13 @@ def DoctorRegistration(request):
         last_name = data.get('last_name')
         email = data.get('email')
         phone_no = data.get('phone_no')
-        dept = data.get('department_id')
-        qual = data.get('qualification')
-        morning_time = data.get('morning_time')
-        evening_time = data.get('evening_time')
-        fees = data.get('doctor_fees')
+       # dept = data.get('department_id')
+        # qual = data.get('qualification')
+        # morning_time = data.get('morning_time')
+        # evening_time = data.get('evening_time')
+        # fees = data.get('doctor_fees')
 
-        if not (username and password and first_name and last_name and email and phone_no and dept and qual and morning_time and evening_time and fees):
+        if not (username and password and first_name and last_name and email and phone_no):
             return JsonResponse({'error': 'Invalid registration details.'}, status=400)
         
         if User.objects.filter(username=username).exists() or User.objects.filter(email=email).exists():
@@ -164,23 +208,19 @@ def DoctorRegistration(request):
 
         doctorid = User.objects.filter(email=email).values('id').first()
         doctoridd = doctorid['id']
-        department_instance = DoctorDepartment.objects.filter(id=dept).first()
+       
 
          
         role = User_Role.objects.create(
             User_id=doctoridd,
-            Role="doctor"
+            Role="client"
             )
         doctordetails = Doctor_Details.objects.create(
             Doctor_id=doctoridd,
-            Qualification=qual,
-            Department=department_instance,
-            Morning_Time=morning_time,
-            Evening_Time=evening_time,
-            Phone_No=phone_no,
-            Doctor_Fees=fees
+            Phone_No=phone_no
+           
         )
-        return JsonResponse({'message': 'Doctor Registration successful !!'}, status=200)
+        return JsonResponse({'message': 'Client Registration successful !!'}, status=200)
     
     else:
         return JsonResponse({'error': 'Invalid request method.'}, status=405)
@@ -208,12 +248,12 @@ def login_view(request):
 
                 if role.exists():
                     user_role = role[0]['Role']
-                    if user_role == "doctor":
+                    if user_role == "architect":
+                        return JsonResponse({"message": "Architect"})
+                    elif user_role == "doctor":
                         return JsonResponse({"message": "Doctor"})
-                    elif user_role == "receptionist":
-                        return JsonResponse({"message": "Receptionist"})
-                    elif user_role == "patient":
-                        return JsonResponse({"message": "Patient"})
+                    elif user_role == "client":
+                        return JsonResponse({"message": "Client"})
                     else:
                         return JsonResponse({'message': 'Invalid user role'})
                     
@@ -260,18 +300,18 @@ def home_page(request):
                 user_role = role[0]['Role']
 
 
-                if user_role == "doctor":
-                    doctor=list(HomePage_Fields.objects.filter(role="doctor",status="1").order_by('HomePage_fields').values('HomePage_fields','state'))
-                    return JsonResponse(doctor,safe=False)
+                if user_role == "client":
+                    clients=list(HomePage_Fields.objects.filter(role="client",status="1").order_by('order').values('HomePage_fields','state'))
+                    return JsonResponse(clients,safe=False)
                 
 
-                elif user_role == "receptionist":
-                    reception=list(HomePage_Fields.objects.filter(role="receptionist",status="1").values('HomePage_fields','state'))
-                    return JsonResponse(reception,safe=False)
+                elif user_role == "worker":
+                    workers=list(HomePage_Fields.objects.filter(role="worker",status="1").order_by('order').values('HomePage_fields','state'))
+                    return JsonResponse(workers,safe=False)
                 
-                elif user_role == "patient":
-                    patient=list(HomePage_Fields.objects.filter(role="patient",status="1").values('HomePage_fields','state'))
-                    return JsonResponse(patient,safe=False)
+                elif user_role == "architect":
+                    architects=list(HomePage_Fields.objects.filter(role="architect",status="1").order_by('order').values('HomePage_fields','state'))
+                    return JsonResponse(architects,safe=False)
                     
             else:
                     return JsonResponse({'message': 'No user exists.'})
@@ -280,6 +320,77 @@ def home_page(request):
     else:
         JsonResponse("Invalid Request")
 
+
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+######################################--Tested-Doctor-Departments----#####################################################
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+def Doctor_Department(request):
+    if request.method == 'GET':
+        departments = list(DoctorDepartment.objects.filter(status=1).values('Department', 'id'))
+
+        return JsonResponse(departments,safe=False)
+    else:
+        return JsonResponse({"message":"invalid request method"},status=405)
+    
+
+
+####################################--Tested-Doctor-Details-######################################################
+
+
+def Doctor_details(request):
+    if request.method == 'GET':
+         depart = request.GET.get('department') 
+         ddetails = list(Doctor_Details.objects.filter(Department=depart).values('Doctor__first_name','Doctor__last_name','Doctor','Department__Department'))
+         return JsonResponse(ddetails,safe=False)
+    else:
+        return JsonResponse({'message':'invalid method'},status=405)
 
 
 
@@ -295,7 +406,7 @@ def patient_profile(request):
                 user_role = role[0]['Role']
 
 
-                if user_role == "patient":
+                if user_role == "worker":
                     user_id = request.user
 
                     profile = list(Patient_Details.objects.filter(Patient_id=user_id).values('Patient__first_name','Patient__last_name','Patient__email','Patient__username','Patient_Gender','Patient_Age','Patient_Weight','Patient_Contact','Patient_Address'))
@@ -530,7 +641,7 @@ def doctor_profile(request):
                 user_role = role[0]['Role']
 
 
-                if user_role == "doctor":
+                if user_role == "client":
                     user_id = request.user.id
             
                     profile = list(Doctor_Details.objects.filter(Doctor_id=user_id).values('Qualification','Department__Department','Doctor_id__first_name','Doctor_id__last_name','Doctor_id__email','Doctor_id__username','Phone_No','Morning_Time','Evening_Time'))
@@ -555,7 +666,7 @@ def doctor_patients(request):
             if role.exists():
                 user_role = role[0]['Role']
 
-                if user_role == "doctor":
+                if user_role == "client":
                     user_id = request.user.id
                     doctorid = Doctor_Details.objects.get(Doctor=user_id)
             
@@ -771,7 +882,7 @@ def receptionist_patients(request):
             if user_role_query.exists():
                 user_role = user_role_query.first().Role
 
-                if user_role == "receptionist":
+                if user_role == "architect" or user_role == "client":
                     appointments = Patient_Appointments.objects.all()
                     patients_data = []
                     patient_names = set()
@@ -813,10 +924,10 @@ def receptionist_doctors(request):
                 user_role = role[0]['Role']
 
 
-                if user_role == "receptionist":
+                if user_role == "architect":
 
 
-                    doctors = list(Doctor_Details.objects.values('Doctor_id__first_name', 'Doctor_id__last_name','Department__Department','Doctor_Fees','Morning_Time','Evening_Time'))
+                    doctors = list(Doctor_Details.objects.values('Doctor_id__first_name', 'Doctor_id__last_name','Department__Department','Doctor_Fees','Morning_Time','Evening_Time','Phone_No','Doctor_Address'))
                     return JsonResponse(doctors,safe=False)
                 else:
                     return JsonResponse({'error': 'Please login with receptionist credintials'}, status=401)
@@ -849,7 +960,7 @@ def receptionist(request):
        
         user_role = User_Role.objects.filter(User_id=request.user).values('Role').first()
         
-        if user_role and user_role['Role'] == "receptionist":
+        if user_role:
             data = json.loads(request.body)
             r_approval = data.get('rApproval')
             patient_id = data.get('patient_id')
@@ -896,7 +1007,7 @@ def receptionist(request):
             role = User_Role.objects.filter(User_id=request.user).values('Role')
             user_role = role[0]['Role']
 
-            if user_role == "receptionist":
+            if user_role == "architect" or user_role == "client":
                     newappoint = list(Patient_Appointments.objects.filter(Approval_status=None,Appointment_rejection_reason="NA").values('Appointment_date','Appointment_slot','Patient','Patient__first_name', 'Patient__last_name'))
                    
                     return JsonResponse(newappoint, safe=False)
@@ -1064,6 +1175,9 @@ def graph(request):
 
 
 
+#patient>>worker
+#doctor>>client
+##receptionist>>architect
     
 
 

@@ -4,12 +4,35 @@ from django.conf.urls.static import static
 from django.conf import settings
 
 urlpatterns = [
-    path('PatientRegisteration/', views.PatientRegisteration, name='PatientRegisteration'),
-    path('Doctor_Department/',views.Doctor_Department, name='Doctor_Department'),
-    path('Doctor_details/',views.Doctor_details,name='Doctor_details'),
-    path('DoctorRegistration/', views.DoctorRegistration, name='DoctorRegistration'),
+    path('Architect_Registration/',views.ArchitectRegistration, name='Architect-Registration'),
+    path('WorkerRegisteration/', views.WorkerRegistration, name='Worker-Registration'),
+    path('ClientRegistration/', views.ClientRegistration, name='Client-Registeration'),
+    
     path('login_view/', views.login_view, name='login_view'),
     path('logout_view/', views.logout_view, name='logout_view'),
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    path('Doctor_Department/',views.Doctor_Department, name='Doctor_Department'),
+    
+    path('Doctor_details/',views.Doctor_details,name='Doctor_details'),
+    
+    
 
     path('patient/',views.patient,name='patient'),
     path('patient_profile/',views.patient_profile,name='patient_profile'),

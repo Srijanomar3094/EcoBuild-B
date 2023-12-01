@@ -22,6 +22,7 @@ class HomePage_Fields(models.Model):
     status = models.IntegerField(default=0)
     state = models.CharField(max_length=500,default="ReceptionDashboard.Receptionist")
     icon = models.CharField(max_length=500,default="fa fa-user")
+    order = models.IntegerField(default=1)
 
 
 class Patients_Prescriptions(models.Model):
@@ -46,7 +47,8 @@ class Doctor_Details(models.Model):
     Morning_Time = models.CharField(max_length=500,default='NA')
     Evening_Time = models.CharField(max_length=500,default='NA')
     Phone_No = models.BigIntegerField()
-    Doctor_Fees = models.IntegerField()
+    Doctor_Fees = models.IntegerField(null=True)
+    Doctor_Address = models.CharField(max_length=500,default='NA')
     
 
 class Patient_Appointments(models.Model):
@@ -86,3 +88,11 @@ class Receptionist(models.Model):
     Patient_Details = models.ForeignKey(Patient_Details, on_delete=models.SET_NULL, null=True)
     Patient_Appointments = models.ForeignKey(Patient_Appointments, on_delete=models.SET_NULL, null=True)
     Doctor = models.ForeignKey(Doctor_Details,on_delete=models.SET_NULL, null=True)
+
+class Architect(models.Model):
+    architect = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    Area = models.CharField(max_length=100)
+    Name = models.CharField(max_length=100)
+    Qualification = models.CharField(max_length=100)
+    Experience = models.IntegerField()
+    Projects = models.IntegerField()
